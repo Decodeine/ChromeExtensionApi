@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include  # Import include to include app-specific URLs
+from video_handling_app import urls  # Import from the app directory
 
 from django.conf import settings
 from django.conf.urls.static import static
