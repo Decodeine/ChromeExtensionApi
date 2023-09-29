@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-qmz=@l)!_k1-@140*q+k=t$xr_@0az^sqsdamt=o+ig#ar0xnf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['chromeextensionapi.onrender.com']
 
 
 # Application definition
