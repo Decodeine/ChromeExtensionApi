@@ -6,6 +6,7 @@ from celery import shared_task
 import logging
 import base64
 import os
+import tempfile
 
 logger = logging.getLogger(__name__)
 
@@ -25,30 +26,33 @@ def upload_video(request):
         # Decode the base64 blob data
         video_data = video_blob.read()
 
-        # Create a temporary video file to save the video data
-        temp_video_path = os.path.join(settings.MEDIA_ROOT, 'temp_video.mp4')
+        # Create a temporary directory
+        temp_dir = tempfile.mkdtemp()
+
+        # Define the temporary video file path
+        temp_video_path = os.path.join(temp_dir, 'temp_video.mp4')
         print(f"temp_video_path: {temp_video_path}")
 
         try:
             with open(temp_video_path, 'wb') as temp_video_file:
-              temp_video_file.write(video_data)
+                temp_video_file.write(video_data)
             print("Temporary video file created successfully.")
+
+            # Extract audio from the video
+            audio_path = os.path.join(settings.MEDIA_ROOT, 'audio', 'temp_audio.mp3')
+            extract_audio(temp_video_path, audio_path)
+
+            # Transcribe the extracted audio
+            transcription = transcribe_audio(audio_path)
+
+            return JsonResponse({"message": "Video blob uploaded successfully", "transcription": transcription})
         except Exception as e:
             print(f"Error creating temporary video file: {str(e)}")
-        with open(temp_video_path, 'wb') as temp_video_file:
-            temp_video_file.write(video_data)
-
-        # Extract audio from the video
-        audio_path = os.path.join(settings.MEDIA_ROOT, 'audio', 'temp_audio.mp3')
-        extract_audio(temp_video_path, audio_path)
-
-        # Transcribe the extracted audio
-        transcription = transcribe_audio(audio_path)
-
-        return JsonResponse({"message": "Video blob uploaded successfully", "transcription": transcription})
+            return JsonResponse({"error": "Failed to process the video blob."}, status=500)
     
     return JsonResponse({"error": "Only POST requests are allowed"}, status=400)
 
+# Rest of your code remains the same
 
 def extract_audio(video_path, audio_path):
     video_clip = VideoFileClip(video_path)
