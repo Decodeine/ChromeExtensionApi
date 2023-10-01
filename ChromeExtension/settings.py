@@ -129,5 +129,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = 'pyamqp://guest:guest@chromeextensionqueue.onrender.com'
+# settings.py
+
+# Celery configuration
+CELERY_BROKER_URL = 'pyamqp://guest@chromeextensionqueue.onrender.com'
 CELERY_RESULT_BACKEND = 'rpc://'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_ENABLE_UTC = True
+
+# Register your Celery app
+CELERY_APP_NAME = 'ChromeExtension'
+CELERY_RESULT_EXPIRES = 3600

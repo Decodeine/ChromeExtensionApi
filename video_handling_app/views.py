@@ -4,6 +4,9 @@ from django.core.files.storage import FileSystemStorage
 from moviepy.editor import VideoFileClip
 import requests
 from celery import shared_task
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # Define the allowed video file extensions
@@ -46,29 +49,37 @@ def extract_audio(video_path, audio_path):
     audio_clip = video_clip.audio
     audio_clip.write_audiofile(audio_path)
 
+
+
 @shared_task
 def transcribe_audio(audio_path):
-    # Read the audio file
-    with open(audio_path, 'rb') as audio_file:
-        audio_data = audio_file.read()
+    try:
+        with open(audio_path, 'rb') as audio_file:
+            audio_data = audio_file.read()
 
-    # Make a POST request to the Whisper API
-    response = requests.post(
-        'https://api.openai.com/v1/whisper/recognize',
-        headers={
-            'Authorization': 'Bearer 11MPTEENHW7V3T43FGMVIP3NYS35VDQM',  # Replace with your actual API key
-        },
-        files={
-            'audio': ('audio.mp3', audio_data),
-        },
-    )
+        # Make a POST request to the Whisper API
+        response = requests.post(
+            'https://api.openai.com/v1/whisper/recognize',
+            headers={
+                'Authorization': 'Bearer 11MPTEENHW7V3T43FGMVIP3NYS35VDQM',  # Replace with your actual API key
+            },
+            files={
+                'audio': ('audio.mp3', audio_data),
+            },
+        )
 
-    # Get the transcription result
-    if response.status_code == 200:
-        transcription = response.json()['text']
-        return transcription
-    else:
-        return None  # Handle API request error
+        # Your existing code for making the API request
+
+        if response.status_code == 200:
+            transcription = response.json()['text']
+            return transcription
+        else:
+            logger.error(f"API request failed with status code {response.status_code}")
+    except Exception as e:
+        logger.error(f"Error in transcribe_audio task: {str(e)}")
+
+    return None
+
 
 
 
