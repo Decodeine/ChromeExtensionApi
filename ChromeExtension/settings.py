@@ -129,5 +129,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL ='pyamqp://chromeextensionqueue.onrender.com'
+CELERY_BROKER_URL = 'pyamqp://guest:guest@chromeextensionqueue.onrender.com'
 CELERY_RESULT_BACKEND = 'rpc://'
