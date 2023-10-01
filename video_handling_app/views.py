@@ -67,18 +67,17 @@ def transcribe_audio(audio_path):
             },
         )
 
-        # Your existing code for making the API request
-
         if response.status_code == 200:
             transcription = response.json()['text']
-            return transcription
         else:
-            logger.error(f"API request failed with status code {response.status_code}")
+            transcription = "Transcription failed"  # Handle the error case here
+
+        return transcription
+
     except Exception as e:
+        # Handle any exceptions that may occur during the process
         logger.error(f"Error in transcribe_audio task: {str(e)}")
-
-    return None
-
+        return "Transcription failed"  # Handle the error case here
 
 
 
