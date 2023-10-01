@@ -23,8 +23,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('upload/', include('video_handling_app.urls')), 
-    path('play/', include('video_playback_app.urls')),  
+    path('', include('video_handling_app.urls')), 
+    path('', include('video_playback_app.urls')),  
 ]
 
 if settings.DEBUG:

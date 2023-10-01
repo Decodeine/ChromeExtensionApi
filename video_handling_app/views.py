@@ -1,6 +1,9 @@
 from django.http import JsonResponse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from moviepy.editor import VideoFileClip
+import requests
+from celery import shared_task
 
 
 # Define the allowed video file extensions
@@ -26,6 +29,47 @@ def upload_video(request):
         # Construct the URL to access the saved video
         video_url = fs.url(saved_file)
 
-        return JsonResponse({"message": "Video uploaded successfully", "video_url": video_url})
+        # Extract audio from the video
+        audio_path = settings.MEDIA_ROOT + '/audio/' + uploaded_file.name.replace('.','_') + '.mp3'
+        extract_audio(saved_file, audio_path)
+
+        # Transcribe the extracted audio
+        transcription = transcribe_audio(audio_path)
+
+        return JsonResponse({"message": "Video uploaded successfully", "video_url": video_url, "transcription": transcription})
     
     return JsonResponse({"error": "Only POST requests are allowed"}, status=400)
+
+
+def extract_audio(video_path, audio_path):
+    video_clip = VideoFileClip(video_path)
+    audio_clip = video_clip.audio
+    audio_clip.write_audiofile(audio_path)
+
+@shared_task
+def transcribe_audio(audio_path):
+    # Read the audio file
+    with open(audio_path, 'rb') as audio_file:
+        audio_data = audio_file.read()
+
+    # Make a POST request to the Whisper API
+    response = requests.post(
+        'https://api.openai.com/v1/whisper/recognize',
+        headers={
+            'Authorization': 'Bearer 11MPTEENHW7V3T43FGMVIP3NYS35VDQM',  # Replace with your actual API key
+        },
+        files={
+            'audio': ('audio.mp3', audio_data),
+        },
+    )
+
+    # Get the transcription result
+    if response.status_code == 200:
+        transcription = response.json()['text']
+        return transcription
+    else:
+        return None  # Handle API request error
+
+
+
+
