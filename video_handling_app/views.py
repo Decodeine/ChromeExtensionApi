@@ -78,7 +78,7 @@ def transcribe_audio(audio_path):
         response = requests.post(
             'https://api.openai.com/v1/whisper/recognize',
             headers={
-                'Authorization': 'Bearer 11MPTEENHW7V3T43FGMVIP3NYS35VDQM',  # Replace with your actual API key
+                'Authorization': 'Bearer FQEXULQHB7WCH2GUYHAYSLX1NGC8MBVQ',  # Replace with your actual API key
             },
             files={
                 'audio': ('audio.mp3', audio_data),
