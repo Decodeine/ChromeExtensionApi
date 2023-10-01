@@ -11,7 +11,7 @@ import os
 logger = logging.getLogger(__name__)
 
 # Define the allowed video file extensions
-ALLOWED_VIDEO_EXTENSIONS = ['.mp4', '.avi', '.mov']  # Add more if needed
+ALLOWED_VIDEO_EXTENSIONS = ['.mp4', '.avi', '.mov','.webm']  # Add more if needed
 
 def has_allowed_extension(file_name):
     return any(file_name.endswith(ext) for ext in ALLOWED_VIDEO_EXTENSIONS)

@@ -3,7 +3,7 @@ from django.conf import settings
 import os
 
 
-ALLOWED_VIDEO_EXTENSIONS = ['.mp4', '.avi', '.mov']
+ALLOWED_VIDEO_EXTENSIONS = ['.mp4', '.avi', '.mov','.webm']
 
 def has_allowed_extension(file_name):
     return any(file_name.endswith(ext) for ext in ALLOWED_VIDEO_EXTENSIONS)
@@ -33,6 +33,8 @@ def play_video(request, video_id):
         content_type = 'video/x-msvideo'
     elif file_extension.lower() == '.mov':
         content_type = 'video/quicktime'
+    elif file_extension.lower() == '.webm':
+        content_type = 'video/webm'
 
     # Open the video file for reading
     with open(video_file_path, 'rb') as video_file:
