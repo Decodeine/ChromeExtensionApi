@@ -143,3 +143,7 @@ CELERY_ENABLE_UTC = True
 # Register your Celery app
 CELERY_APP_NAME = 'ChromeExtension'
 CELERY_RESULT_EXPIRES = 3600
+CELERY = {
+    # ... other settings ...
+    'broker_connection_retry_on_startup': True,
+}
