@@ -27,7 +27,14 @@ def upload_video(request):
 
         # Create a temporary video file to save the video data
         temp_video_path = os.path.join(settings.MEDIA_ROOT, 'temp_video.mp4')
+        print(f"temp_video_path: {temp_video_path}")
 
+        try:
+            with open(temp_video_path, 'wb') as temp_video_file:
+              temp_video_file.write(video_data)
+            print("Temporary video file created successfully.")
+        except Exception as e:
+            print(f"Error creating temporary video file: {str(e)}")
         with open(temp_video_path, 'wb') as temp_video_file:
             temp_video_file.write(video_data)
 
