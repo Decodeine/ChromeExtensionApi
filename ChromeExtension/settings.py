@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'video_handling_app',
     'video_playback_app',
+    'rest_framework',
 
 ]
 
