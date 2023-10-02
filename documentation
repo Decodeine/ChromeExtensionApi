@@ -1,0 +1,85 @@
+ChromeExtension API - Upload Video
+The Upload Video endpoint allows you to upload a complete video blob in the POST request body. 
+The API will decode the video blob, save it as a temporary video file, extract audio from the video, and transcribe the audio content.
+
+Endpoint
+Upload Video (POST)
+Upload a complete video blob.
+Method: POST
+Endpoint:https://chromeextensionapi.onrender.com/upload/
+Request Body: Multipart form data with a single field:
+recording: The video blob to upload.
+Response: JSON with a success message and transcription of the audio.
+Example Request:
+
+bash
+Copy code
+curl -X POST -F "recording=@video_blob.mp4"https://chromeextensionapi.onrender.com/upload/
+Example Response:
+
+json
+Copy code
+{
+    "message": "Video blob uploaded successfully",
+    "transcription": "This is the transcribed audio content."
+}
+Usage
+Make a POST request to the "Upload Video" endpoint with the video blob as form data.
+
+The API will decode the video blob, save it as a temporary video file, and extract audio from the video.
+
+The extracted audio content will be transcribed using the Whisper API (OpenAI).
+
+The API will respond with a success message indicating that the video blob was uploaded successfully and provide the transcription of the audio.
+
+Implementation Notes
+The API uses moviepy to extract audio from the video and transcribe it using the Whisper API.
+Temporary files are created during the process and cleaned up afterward.
+Please note that this API does not implement authentication or authorization. Ensure that you handle security concerns in your application as needed.
+
+Make sure to include the correct video_blob in the request body, and the API will take care of processing and transcribing the video content.
+
+# ChromwExtension Api - Append Video Chunk
+
+The **Append Video Chunk** endpoint allows you to append a video chunk to an existing video. This is useful for progressively building a video by uploading and appending multiple chunks of video data. The API takes care of concatenating these chunks into a final video.
+
+## Endpoint
+
+### Append Video Chunk (POST)
+
+- Append a video chunk to an existing video.
+- Method: POST
+- Endpoint: `https://chromeextensionapi.onrender.com/append/`
+- Request Body: Multipart form data containing two fields:
+  - `existing_video`: The existing video to which you want to append the new chunk.
+  - `new_video`: The new video chunk to be appended.
+- Response: JSON with a success message.
+
+**Example Request:**
+
+```bash
+curl -X POST -F "existing_video=@existing_video.mp4" -F "new_video=@new_video.mp4" https://chromeextensionapi.onrender.com/append/
+```
+
+**Example Response:**
+
+```json
+{
+    "message": "Video appended successfully"
+}
+```
+
+## Usage
+
+1. Make a POST request to the "Append Video Chunk" endpoint with the existing video and the new video chunk as form data.
+
+2. The API will append the new video chunk to the existing video, and the final concatenated video will be stored.
+
+## Implementation Notes
+
+- The API uses moviepy to concatenate video clips, ensuring proper video format and codec compatibility.
+- Temporary files are created during the process and cleaned up afterward.
+
+Please ensure that you follow the correct order when appending video chunks to maintain the sequence of the final video.
+
+**Note:** This API does not implement authentication or authorization. Make sure to handle security concerns in your application accordingly.
