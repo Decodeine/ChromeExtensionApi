@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 from moviepy.editor import VideoFileClip, concatenate_videoclips
 import requests
@@ -63,8 +63,9 @@ def transcribe_audio(audio_path):
         # Handle any exceptions that may occur during the process
         logger.error(f"Error in transcribe_audio task: {str(e)}")
         return "Transcription failed" 
-     
-#function to receive complete video blob in post request body
+
+# Function to receive a complete video blob in the POST request body
+@api_view(['POST'])
 def upload_video(request):
     if request.method == 'POST':
         video_blob = request.FILES.get('recording')  # Assuming the blob is sent as 'recording'
@@ -92,8 +93,7 @@ def upload_video(request):
     
     return JsonResponse({"error": "Only POST requests are allowed"}, status=400)
 
-
-#function to receive the video blob in chunks concatenate and process
+# Function to receive the video blob in chunks, concatenate, and process
 @api_view(['POST'])
 def append_video(request):
     if request.method == 'POST':
@@ -131,6 +131,13 @@ def append_video(request):
         os.remove(existing_tempfile_path)
         os.remove(new_tempfile_path)
 
-        return JsonResponse({"message": "Video appended successfully"}, status=status.HTTP_200_OK)
+        # Extract audio from the final video
+        final_audio_path = os.path.join(settings.MEDIA_ROOT, 'audio', 'final_audio.mp3')
+        extract_audio(final_video_path, final_audio_path)
+
+        # Transcribe the extracted audio from the final video
+        transcription = transcribe_audio(final_audio_path)
+
+        return JsonResponse({"message": "Video appended successfully", "transcription": transcription}, status=status.HTTP_200_OK)
     
     return JsonResponse({"error": "Only POST requests are allowed"}, status=400)
