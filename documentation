@@ -1,4 +1,5 @@
-ChromeExtension API - Upload Video
+ChromeExtension API - Video_handling_app
+Upload Video
 The Upload Video endpoint allows you to upload a complete video blob in the POST request body. 
 The API will decode the video blob, save it as a temporary video file, extract audio from the video, and transcribe the audio content.
 
@@ -83,3 +84,71 @@ curl -X POST -F "existing_video=@existing_video.mp4" -F "new_video=@new_video.mp
 Please ensure that you follow the correct order when appending video chunks to maintain the sequence of the final video.
 
 **Note:** This API does not implement authentication or authorization. Make sure to handle security concerns in your application accordingly.
+
+# ChromeExtension Api - Video Playback API
+
+The **Video Playback API** allows you to retrieve and play video files based on a video ID. You can use this API to access and stream video content stored on the server.
+
+## Endpoint
+
+### Play Video (GET)
+
+- Retrieve and play a video file.
+- Method: GET
+- Endpoint: https://chromeextensionapi.onrender.com/play_video/<video_id>/`
+- Response: The video content with appropriate headers for playback.
+
+**Example Request:**
+
+```bash
+curlhttps://chromeextensionapi.onrender.com/play_video/14/
+
+
+
+
+# Video Playback API
+
+The **Video Playback API** allows you to retrieve and play video files based on a video ID. You can use this API to access and stream video content stored on the server.
+
+## Endpoint
+
+### Play Video (GET)
+
+- Retrieve and play a video file.
+- Method: GET
+- Endpoint: `https://your-api-domain.com/play_video/<video_id>/`
+- Response: The video content with appropriate headers for playback.
+
+**Example Request:**
+
+```bash
+curl https://your-api-domain.com/play_video/14/
+Usage
+Make a GET request to the "Play Video" endpoint with the desired video_id.
+
+The API will respond with the video content and appropriate headers for playback.
+
+Implementation Details
+To ensure smooth playback, the API performs the following steps:
+
+Constructs the path to the video file based on the provided video_id.
+
+Checks if the video file exists; if not, it returns a "Video not found" response (HTTP status code 404).
+
+Determines the file extension of the video file and checks if it's an allowed format. The API supports the following video formats: MP4, AVI, MOV, and WebM. If the format is not supported, it returns an "Unsupported video format" response (HTTP status code 415).
+
+Sets the appropriate content type based on the file extension to ensure compatibility with video players.
+
+Opens the video file for reading and returns it as a response with the correct content type.
+
+Please note that this API does not implement authentication or authorization, so ensure that you handle security concerns in your application as needed.
+      
+You can use the play_video view to serve and play video content by providing the video_id in the URL.
+
+
+
+
+
+
+
+
